@@ -1,0 +1,31 @@
+@charset 'utf-8';
+
+.page-left {
+	width: 13%;
+}
+
+.page-right {
+	width: 86.5%;
+}
+
+.height40 {
+	height: 40px;
+	line-height: 40px;
+	padding: 0 10px;
+}
+
+a.active {
+	background-color: #eee;
+	font-weight: 700;
+}
+
+.tab {
+	width: 50%;
+	height: 35px;
+	float: left;
+	border: 1px solid #e7e7e7;
+	text-align: center;
+	line-height: 35px;
+	background-color: #fff;
+}
+

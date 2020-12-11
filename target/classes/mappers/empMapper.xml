@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="employee">
+	
+	<sql id="search">
+		<choose>
+			<when test="searchOpt == ''"></when>
+			<when test="searchOpt == 'all'">
+				 AND (emp_name LIKE CONCAT('%',#{words},'%') OR emp_num LIKE CONCAT('%',#{words},'%')) 
+			</when>
+			<otherwise>
+				 AND ${searchOpt} LIKE CONCAT('%',#{words},'%') 
+			</otherwise>
+		</choose>
+	</sql>
+	<select id="getEmpList" resultType="com.greenart.grp.model.EmpVO">
+		SELECT 
+			emp_id AS empID,
+			emp_buseo AS empBuseoCode,
+			B.buseo_name AS empBuseoName,
+			emp_grade AS empGradeCode,
+			G.grade_name AS empGradeName,
+			emp_num AS empNum,
+			emp_name AS empName,
+			emp_enter AS empEnter,
+			emp_pwd AS empPwd,
+			emp_regdate AS empRegdate,
+			emp_head AS empHead,
+			emp_step AS empStep,
+			emp_auth AS empAuth,
+			emp_confirm AS empConfirm 
+		FROM grp_employee AS E, grp_buseo AS B, grp_grade AS G 
+		WHERE E.emp_buseo = B.buseo_id AND E.emp_grade = G.grade_id <include refid="search"></include> 
+		ORDER BY emp_id DESC LIMIT #{start}, #{end}
+	</select>
+	
+	<select id="getEmpCount" resultType="int">
+		SELECT COUNT(emp_id) FROM grp_employee AS E, grp_buseo AS B, grp_grade AS G 
+		WHERE E.emp_buseo = B.buseo_id AND E.emp_grade = G.grade_id <include refid="search"></include>
+	</select>
+
+	<delete id="setEmpDelete" parameterType="int">
+		DELETE FROM grp_employee WHERE emp_id = #{eid}
+	</delete>
+	
+	<delete id="setEmpDeleteAll" parameterType="int">
+		DELETE FROM grp_employee WHERE emp_id = #{eid}
+	</delete>
+	
+	<update id="setEmpHeadChange" parameterType="hashmap">
+		UPDATE grp_employee SET emp_head = #{empHead} WHERE emp_id = #{empID}
+	</update>
+	
+	<update id="setEmpConfirmChange" parameterType="hashmap">
+		UPDATE grp_employee SET emp_confirm = #{empConfirm} WHERE emp_id = #{empID}
+	</update>
+	
+	<select id="getEmpOne" parameterType="String" resultType="com.greenart.grp.model.EmpVO">
+		SELECT 
+			emp_id AS empID,
+			emp_buseo AS empBuseoCode,
+			B.buseo_name AS empBuseoName,
+			emp_grade AS empGradeCode,
+			G.grade_name AS empGradeName,
+			emp_num AS empNum,
+			emp_name AS empName,
+			emp_enter AS empEnter,
+			emp_regdate AS empRegdate,
+			emp_head AS empHead,
+			emp_step AS empStep,
+			emp_auth AS empAuth,
+			emp_confirm AS empConfirm 
+		FROM grp_employee AS E, grp_buseo AS B, grp_grade AS G 
+		WHERE E.emp_buseo = B.buseo_id AND E.emp_grade = G.grade_id AND emp_num = #{sessionNum}
+	</select>
+	
+</mapper>

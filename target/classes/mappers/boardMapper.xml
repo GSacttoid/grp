@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="board">
+	<insert id="setBoard" parameterType="com.greenart.grp.model.BoardVO">
+		INSERT INTO grp_board SET 
+			boardGrp = #{boardGrp},
+			boardCode = #{boardCode},
+			boardColor = #{boardColor},
+			boardMaker = #{boardMaker},
+			boardTitle = #{boardTitle},
+			boardType = #{boardType},
+			boardRead = #{boardRead},
+			boardWrite = #{boardWrite},
+			boardReply = #{boardReply},
+			boardDownload = #{boardDownload},
+			boardRegdate = now()
+	</insert>
+
+	<insert id="createArticleTbl">
+		${str}
+	</insert>
+	
+	<insert id="createCommentTbl">
+		${str}
+	</insert>
+	
+	<select id="getBoardChk" parameterType="String" resultType="int">
+		SELECT COUNT(bid) FROM grp_board WHERE boardCode = #{boardCode}	
+	</select>
+	
+	<select id="getBoardList" resultType="com.greenart.grp.model.BoardVO">
+		SELECT * FROM grp_board A, grp_buseo B WHERE A.boardGrp = B.buseo_id ORDER BY bid DESC LIMIT #{start}, #{end}
+	</select>
+	
+	<delete id="setBoardDelete" parameterType="String">
+		DELETE FROM grp_board WHERE boardCode = #{boardCode}
+	</delete>
+	
+	<insert id="dropArticleTbl">
+		${str}
+	</insert>
+	
+	<insert id="dropCommentTbl">
+		${str}
+	</insert>
+	
+	<select id="getBoardCount" resultType="int">
+		SELECT COUNT(bid) FROM grp_board
+	</select>
+	
+</mapper>

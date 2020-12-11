@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="register">
+	
+	<select id="grpGetBuseo" resultType="com.greenart.grp.model.BuseoVO">
+		SELECT * FROM grp_buseo ORDER BY buseo_id
+	</select>
+	
+	<select id="grpGetGrade" resultType="com.greenart.grp.model.GradeVO">
+		SELECT * FROM grp_grade ORDER BY grade_id
+	</select>
+	
+	<insert id="setEmpRegister" parameterType="com.greenart.grp.model.EmpVO">
+		<selectKey keyProperty="ref" order="BEFORE" resultType="int">
+			SELECT IFNULL(max(emp_id)+1, 1) FROM grp_employee 
+		</selectKey>
+		
+		INSERT INTO grp_employee SET 
+			emp_buseo = #{empBuseoCode},
+			emp_grade = #{empGradeCode},
+			emp_enter = #{empEnter},
+			emp_name = #{empName},
+			emp_pwd = #{empPwd},
+			emp_regdate = now(),
+			emp_step = #{empStep},
+			emp_num = CONCAT(#{empNum},#{ref})
+	</insert>
+	
+	<select id="getEmpNumCheck" parameterType="hashmap" resultType="int">
+		SELECT COUNT(emp_id) FROM grp_employee WHERE emp_num = #{empNum} AND emp_pwd = #{empPwd}
+	</select>
+	
+	<select id="getEmpInfo" parameterType="hashmap" resultType="com.greenart.grp.model.EmpVO">
+		SELECT 
+			emp_num AS empNum, 
+			emp_name AS empName, 
+			emp_auth AS empAuth, 
+			emp_confirm AS empConfirm, 
+			emp_buseo AS empBuseoCode, 
+			emp_grade AS empGradeCode,
+			buseo_name AS empBuseoName,
+			grade_name AS empGradeName 
+		FROM grp_employee LEFT JOIN grp_buseo ON emp_buseo = buseo_id 
+		LEFT JOIN grp_grade ON emp_grade = grade_id 
+		WHERE emp_num = #{empNum} AND emp_pwd = #{empPwd}
+	</select>
+	
+	<insert id="setEmpRegOthers" parameterType="com.greenart.grp.model.EmpVO">		
+		INSERT INTO grp_employee_others SET 
+			emp_gender 	= #{empGender},
+			emp_birth 	= #{empBirth},
+			emp_cp  	= #{empCp},
+			emp_in 		= #{empIn},
+			emp_tel  	= #{empTel},
+			emp_recruit = #{empRecruit},
+			emp_hope  	= #{empHope},
+			emp_height  = #{empHeight},
+			emp_weight  = #{empWeight},
+			emp_service = #{empService},
+			emp_religion = #{empReligion},
+			emp_hobby  	= #{empHobby},
+			emp_speciality = #{empSpeciality},
+			emp_disablility = #{empDisablility},
+			emp_reward   = #{empReward},
+			emp_married  = #{empMarried},
+			emp_license1 = #{empLicense1},
+			emp_license2 = #{empLicense2},
+			emp_license3 = #{empLicense3},
+			emp_license4 = #{empLicense4},
+			emp_license5 = #{empLicense5},
+			emp_lang1 	 = #{empLang1},
+			emp_lang2	 = #{empLang2},
+			emp_lang3 	 = #{empLang3},
+			emp_lang4 	 = #{empLang4},
+			emp_lang5 	 = #{empLang5},
+			emp_rnp1  	 = #{empRnp1},
+			emp_rnp2 	 = #{empRnp2},
+			emp_rnp3 	 = #{empRnp3},
+			emp_rnp4 	 = #{empRnp4},
+			emp_rnp5 	 = #{empRnp5},
+			emp_comment  = #{empComment},
+			emp_id_fk 	 = #{empIDFK}
+	</insert>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,53 @@
+@charset 'utf-8';
+
+
+/* table tr 높이 */
+tr {
+    height:40px;
+}
+
+/* table 선색 */
+td {
+    border:1px solid #d6dce7;
+}
+
+/* table td 넓이 */
+.td-3 {
+    width:3%;
+}
+
+.td-5 {
+    width:5%;
+}
+
+.td-7 {
+    width:7%;
+}
+
+.td-8 {
+    width:8%;
+}
+
+.td-10 {
+    width:10%;
+}
+
+.td-13 {
+    width:13%;
+}
+
+.td-15 {
+    width:15%;
+}
+
+.td-20 {
+    width:20%;
+}
+
+.td-40 {
+    width:40%;
+}
+
+.td-90 {
+    width:90%;
+}

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="company">
+	
+	<select id="getCompany" resultType="com.greenart.grp.model.ComVO">
+		SELECT 
+			com_name AS comName,
+			com_sub_name AS comSubName,
+			com_ceo AS comCeo,
+			com_tel AS comTel,
+			com_url AS comUrl,
+			com_copy AS comCopy,
+			com_auth AS comAuth, 
+			com_main_logo AS comMainLogo
+		FROM grp_company LIMIT 1
+	</select>
+
+	<update id="setCompany" parameterType="com.greenart.grp.model.ComVO">
+		UPDATE grp_company SET 
+		com_name = #{comName},
+		com_sub_name = #{comSubName},
+		com_ceo = #{comCeo},
+		com_tel = #{comTel},
+		com_url = #{comUrl},
+		com_copy = #{comCopy},
+		com_auth = #{comAuth}, 
+		com_main_logo = #{comMainLogo}
+	</update>
+</mapper>
