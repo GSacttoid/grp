@@ -92,6 +92,117 @@
             </div>
         </div>
     </div>
-</body>
+    
+    <!-- 댓글 화면 구성 -->
+    <hr style="margin:30px 0px; border: 1px solid #eee;" />
 
+    <div class="p-lr20">
+        <div id="commentList">
+            
+        </div>
+        <hr style="margin:30px 0px; border: 1px solid #f1f1f1;" />
+        <div style="margin-top: 20px;">
+            <form id="frm"> <!-- ajax로 자료 전체 전송하기(input -> name을 사용) -->
+            	<input type="hidden" name="boardCode" value="${boardCode}" readonly />
+                <input type="hidden" name="aid" value="${article.aid}" readonly />
+                <input type="hidden" name="who" value="${sessionScope.empName}" readonly />
+                <textarea class="p10 noto font16" id="comment" name="comment" style="border: 1px solid #e7e7e7; width: 100%; height: 100px;" placeholder="댓글 내용을 입력하세요."></textarea>
+                <div class="flex flex-justify p10"> <!-- 비밀댓글 & 저장 버튼 -->
+                    <div class="">
+                        <input type="checkbox" name="" /> 비밀댓글
+                    </div>
+                    <div class="">
+                        <button id="btn" class="noto font16 weight700" type="button" style="background-color: #3f51b5; color:#fff; border-radius: 3px; padding: 8px 10px;">댓글등록</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- //댓글 화면 구성 -->
+    
+</body>
+<script>
+    function checkComment(){
+        if($("#comment").val() == ''){
+            alert("댓글 내용을 입력하세요.");
+            $("#comment").focus();
+            return false;
+        }
+
+        var formData = $("#frm").serialize(); //form안의 name값의 데이터를 전부 가져오기
+        $.ajax({
+			url		:"${pageContext.request.contextPath}/comment/grp_comment_register",
+			type	:"POST",
+			data	:formData,
+			success	:function(resData){
+				alert("댓글이 등록 되었습니다.");
+				listComment();
+			},
+			error	:function(){
+				alert("관리자에게 문의하세요.");
+			},
+			complete:function(){
+			}
+			
+        });
+    }
+
+    function listComment(){
+    	var formData = $("#frm").serialize();
+    	$.ajax({
+			url		:"${pageContext.request.contextPath}/comment/grp_comment_list",
+			type	:"POST",
+			data	:formData,
+			success	:function(resData){
+
+				var a = '';
+				//resData.list -> who(key), 관리자(value)
+				$.each(resData.list, function(key, value){ //내용을 key, value값으로 분리
+					a += '<div>';
+						a += '<div class="flex" style="margin:10px 0;">';
+							a += '<div style="width: 6%;">';
+								a += '<span style="width: 60px; height: 60px; border-radius: 50%; background-color: tomato; display: inline-block; line-height: 60px; text-align: center;">';
+									a += '<i class="far fa-user f6 font20"></i>';
+								a += '</span>';
+							a += '</div>';
+							a += '<div style="width: 94%;">';
+								a += '<div class="noto font16 weight700" style="color: #555;">';
+									a += '<span>'+value.who+'</span>';
+									a += '<span style="margin-left: 20px;"><i class="far fa-calendar-alt"></i>'+value.regdate+'</span>';
+								a += '</div>';
+								a += '<div class="noto font16">';
+									a += '<span>'+value.comment+'</span>';
+								a += '</div>';
+							a += '</div>';
+						a += '</div>';
+						a += '<div style="text-align: right;">';
+							a += '<button class="s-btn-on">수정</button>';
+							a += '<button class="s-btn-off">삭제</button>';
+						a += '</div>';
+						a += '<hr style="margin:30px 0px; border: 1px solid #f7f7f7;" />';
+					a += '</div>';
+				});
+
+				var b = '';
+					b += '<h2>댓글: '+resData.count+'</h2>';
+					
+				$("#commentList").html(b+a); //위에서 작업한 변수a 내용을 id commentList에 표시
+			},
+			error	:function(){
+				alert("관리자에게 문의하세요.");
+			},
+			complete:function(){
+			}
+			
+        });
+    }
+
+    $("#btn").click(function(){
+        checkComment();
+    });
+
+    $(function(){
+		listComment();
+    });
+</script>
 </html>
