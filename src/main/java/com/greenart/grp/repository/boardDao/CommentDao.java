@@ -25,4 +25,12 @@ public class CommentDao {
 	public int getCommentCount(CommentVO cvo) {
 		return sqlSession.selectOne("comment.getCommentCount", cvo);
 	}
+	
+	public void setCommentDelete(CommentVO cvo) {
+		sqlSession.delete("comment.setCommentDelete", cvo);
+	}
+	
+	public void setCommentModify(CommentVO cvo) {
+		sqlSession.update("comment.setCommentModify", cvo);
+	}
 }

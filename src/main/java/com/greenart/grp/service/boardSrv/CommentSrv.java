@@ -26,4 +26,11 @@ public class CommentSrv {
 		return cDao.getCommentCount(cvo);
 	}
 
+	public void setCommentDelete(CommentVO cvo) {
+		cDao.setCommentDelete(cvo);
+	}
+	
+	public void setCommentModify(CommentVO cvo) {
+		cDao.setCommentModify(cvo);
+	}
 }

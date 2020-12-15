@@ -1,17 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="comment">
-
-	<select id="getCommentCount" resultType="int">
-		SELECT COUNT(*) FROM gat_comment_${boardCode} WHERE aid = #{aid}
+<mapper namespace="article">
+	<select id="getBoardInfo" parameterType="String" resultType="com.greenart.grp.model.BoardVO">
+		SELECT * FROM grp_board WHERE boardCode = #{boardCode}
 	</select>
 	
-	<select id="getCommentList" resultType="com.greenart.grp.model.CommentVO">
-		SELECT * FROM gat_comment_${boardCode} WHERE aid = #{aid} ORDER BY cid DESC
+	<select id="getArticleList" parameterType="hashmap" resultType="com.greenart.grp.model.ArticleVO">
+		SELECT * FROM grp_article_${boardCode} ORDER BY division DESC, ref DESC, re_step ASC LIMIT #{start}, #{end}
 	</select>
 	
-	<insert id="setComment" parameterType="com.greenart.grp.model.CommentVO">
-		INSERT INTO gat_comment_${boardCode}(aid, comment, regdate, who) VALUE (#{aid}, #{comment}, now(), #{who})
+	<insert id="setArticle" parameterType="com.greenart.grp.model.ArticleVO">
+	
+		<selectKey resultType="int" keyProperty="ref" order="BEFORE">
+			SELECT IFNULL(MAX(ref), 0) + 1 FROM grp_article_${boardCode}
+		</selectKey>
+		
+		INSERT INTO grp_article_${boardCode} SET 
+			division	= #{division},
+			subject		= #{subject},
+			writer		= #{writer},
+			content		= #{content},
+			regdate		= now(),
+			fileName	= #{fileName},
+			fileOriName = #{fileOriName},
+			fileUrl		= #{fileUrl},
+			ref			= #{ref},
+			re_step		= 0,
+			re_level	= 0
+	</insert>
+	
+	<select id="getArticleCount" parameterType="String" resultType="int">
+		SELECT count(aid) FROM grp_article_${boardCode}
+	</select>
+	
+	<update id="hitUp" parameterType="hashmap">
+		UPDATE grp_article_${boardCode} SET hit = hit + 1 WHERE aid = #{aid}
+	</update>
+	
+	<select id="getArticleView" parameterType="hashmap" resultType="com.greenart.grp.model.ArticleVO">
+		SELECT * FROM grp_article_${boardCode} WHERE aid = #{aid}
+	</select>
+	
+	<!-- 게시판 답글 정보 조회 -->
+	<select id="getArticleReplyInfo" parameterType="hashmap" resultType="com.greenart.grp.model.ArticleVO">
+		SELECT * FROM grp_article_${boardCode} WHERE aid = #{aid}
+	</select>
+	
+	<!-- 게시판 답글 순서 수정 -->
+	<update id="setArticleReplyOrder" parameterType="com.greenart.grp.model.ArticleVO">
+		UPDATE grp_article_${boardCode} SET re_step = re_step + 1 WHERE ref = #{ref} AND re_step > #{re_step}
+	</update>
+	
+	<!-- 게시판 답글 등록 -->
+	<insert id="setArticleReply" parameterType="com.greenart.grp.model.ArticleVO">
+		INSERT INTO grp_article_${boardCode} SET 
+			division	= #{division},
+			subject		= #{subject},
+			writer		= #{writer},
+			content		= #{content},
+			regdate		= now(),
+			fileName	= #{fileName},
+			fileOriName = #{fileOriName},
+			fileUrl		= #{fileUrl},
+			ref			= #{ref},
+			re_step		= #{re_step} + 1,
+			re_level	= #{re_step} + 1
 	</insert>
 	
 </mapper>

@@ -38,4 +38,16 @@ public class CommentCtr {
 		
 		return map;
 	}
+	
+	@RequestMapping("/grp_comment_delete")
+	@ResponseBody
+	public void setDelete(@ModelAttribute CommentVO cvo) {
+		cSrv.setCommentDelete(cvo);
+	}
+	
+	@RequestMapping("/grp_comment_modify")
+	@ResponseBody
+	public void setModify(@ModelAttribute CommentVO cvo) {
+		cSrv.setCommentModify(cvo);
+	}
 }

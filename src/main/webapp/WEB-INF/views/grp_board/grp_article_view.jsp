@@ -103,7 +103,7 @@
         <hr style="margin:30px 0px; border: 1px solid #f1f1f1;" />
         <div style="margin-top: 20px;">
             <form id="frm"> <!-- ajax로 자료 전체 전송하기(input -> name을 사용) -->
-            	<input type="hidden" name="boardCode" value="${boardCode}" readonly />
+            	<input type="hidden" id="boardCode" name="boardCode" value="${boardCode}" readonly />
                 <input type="hidden" name="aid" value="${article.aid}" readonly />
                 <input type="hidden" name="who" value="${sessionScope.empName}" readonly />
                 <textarea class="p10 noto font16" id="comment" name="comment" style="border: 1px solid #e7e7e7; width: 100%; height: 100px;" placeholder="댓글 내용을 입력하세요."></textarea>
@@ -126,6 +126,7 @@
         if($("#comment").val() == ''){
             alert("댓글 내용을 입력하세요.");
             $("#comment").focus();
+            $("#comment").val('');
             return false;
         }
 
@@ -170,14 +171,14 @@
 									a += '<span>'+value.who+'</span>';
 									a += '<span style="margin-left: 20px;"><i class="far fa-calendar-alt"></i>'+value.regdate+'</span>';
 								a += '</div>';
-								a += '<div class="noto font16">';
+								a += '<div id="" class="viewComment'+value.cid+' noto font16">';
 									a += '<span>'+value.comment+'</span>';
 								a += '</div>';
 							a += '</div>';
 						a += '</div>';
 						a += '<div style="text-align: right;">';
-							a += '<button class="s-btn-on">수정</button>';
-							a += '<button class="s-btn-off">삭제</button>';
+							a += '<button class="s-btn-on" onClick="changeComment('+value.cid+',\''+value.comment+'\')">수정</button>';
+							a += '<button class="s-btn-off" onClick="deleteComment('+value.cid+')">삭제</button>';
 						a += '</div>';
 						a += '<hr style="margin:30px 0px; border: 1px solid #f7f7f7;" />';
 					a += '</div>';
@@ -197,6 +198,69 @@
         });
     }
 
+    function deleteComment(cid){
+        var msg = "선택하신 댓글을 삭제하시겠습니까?";
+        if(confirm(msg)){
+            var formData = {
+            	cid	: cid,
+            	boardCode : $("#boardCode").val()
+            }
+            
+        	$.ajax({
+    			url		:"${pageContext.request.contextPath}/comment/grp_comment_delete",
+    			type	:"POST",
+    			data	:formData,
+    			success	:function(resData){
+    				alert("댓글이 삭제 되었습니다.");
+    				listComment();
+    			},
+    			error	:function(){
+    				alert("관리자에게 문의하세요.");
+    			},
+    			complete:function(){
+    			}
+    			
+            });
+        }
+    }
+
+    function changeComment(cid, comment){
+        var a = '';
+        	a += "<div>";
+				a += '<textarea name="comment_'+cid+'" class="noto p10 font20" style="border: 1px solid #e7e7e7; width:100%; height:100%;">'+comment+'</textarea>';
+			a += "</div>";
+			a += "<div style='margin-top:5px;'>";
+				a += "<button type='button' class='btn-red p10 f6' style='padding:7px 10px;' onClick='modifyComment("+cid+")'>수정 완료</button>"
+			a += "</div>";
+		$(".viewComment" + cid).html(a);  //comment부분 span을 textarea로 교체
+    }
+
+    function modifyComment(cid){
+        var comment = $('[name = comment_'+cid+']').val();
+
+        var formData = {
+            	cid			: cid,
+            	boardCode 	: $("#boardCode").val(),
+            	comment 	: comment
+        }
+        
+        $.ajax({
+			url		:"${pageContext.request.contextPath}/comment/grp_comment_modify",
+			type	:"POST",
+			data	:formData,
+			success	:function(resData){
+				alert("댓글이 수정 되었습니다.");
+				listComment();
+			},
+			error	:function(){
+				alert("관리자에게 문의하세요.");
+			},
+			complete:function(){
+			}
+			
+        });
+    }
+    
     $("#btn").click(function(){
         checkComment();
     });
